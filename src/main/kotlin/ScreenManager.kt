@@ -3,7 +3,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -20,33 +19,17 @@ import androidx.compose.ui.window.rememberWindowState
 @Composable
 @Preview
 fun ScreenManager() {
-    val icon = BitmapPainter(useResource("sample.png", ::loadImageBitmap))
-    val mainWindowState = rememberWindowState()
-    var showMainWindow by remember { mutableStateOf(true) }
     var showSecondWindow by remember { mutableStateOf(false) }
 
-    if (showMainWindow) {
+    if (!showSecondWindow) {
         MainScreen {
-            showMainWindow = false
             showSecondWindow = true
         }
-    }
-
-    if (showSecondWindow) {
-        SecondaryWindow(onClose = { showSecondWindow = false })
-    }
-
-    if (!showMainWindow && !showSecondWindow) {
-        MainScreen {
-            showMainWindow = false
+    } else {
+        SecondaryWindow(onClose = {
             showSecondWindow = false
-        }
-        SecondaryWindow {
-            showSecondWindow = true
-        }
+        })
     }
-
-
 }
 
 @Composable
@@ -76,11 +59,10 @@ fun MainScreen(
 
 @Composable
 fun SecondaryWindow(onClose: () -> Unit) {
-    val secondaryWindowState = rememberWindowState()
     Window(
         onCloseRequest = onClose,
         title = "Login",
-        state = secondaryWindowState
+        state = rememberWindowState()
     ) {
         LoginScreen()
     }
